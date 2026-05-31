@@ -78,20 +78,72 @@ export const authApi = {
 }
 
 // ── Leads ────────────────────────────────────────────────────────────────────
+
+const ngrokHeaders = {
+  'ngrok-skip-browser-warning': 'true',
+}
+
 export const leadsApi = {
-  list:   (params?: Record<string, any>) => api.get('/leads', { params }),
-  get:    (id: string)                   => api.get(`/leads/${id}`),
-  create: (d: any)                       => api.post('/leads', d),
-  update: (id: string, d: any)           => api.put(`/leads/${id}`, d),
-  delete: (id: string)                   => api.delete(`/leads/${id}`),
-  updateStatus:  (id: string, status: string) => api.patch(`/leads/${id}/status?status=${status}`),
-  assign:        (id: string, cId: string)    => api.patch(`/leads/${id}/assign?counselorId=${cId}`),
-  qualify:       (id: string)                 => api.post(`/leads/${id}/qualify`),
+  list: (params?: Record<string, any>) =>
+    api.get('/leads', {
+      params,
+      headers: ngrokHeaders,
+    }),
+
+  get: (id: string) =>
+    api.get(`/leads/${id}`, {
+      headers: ngrokHeaders,
+    }),
+
+  create: (d: any) =>
+    api.post('/leads', d, {
+      headers: ngrokHeaders,
+    }),
+
+  update: (id: string, d: any) =>
+    api.put(`/leads/${id}`, d, {
+      headers: ngrokHeaders,
+    }),
+
+  delete: (id: string) =>
+    api.delete(`/leads/${id}`, {
+      headers: ngrokHeaders,
+    }),
+
+  updateStatus: (id: string, status: string) =>
+    api.patch(`/leads/${id}/status?status=${status}`, null, {
+      headers: ngrokHeaders,
+    }),
+
+  assign: (id: string, cId: string) =>
+    api.patch(`/leads/${id}/assign?counselorId=${cId}`, null, {
+      headers: ngrokHeaders,
+    }),
+
+  qualify: (id: string) =>
+    api.post(`/leads/${id}/qualify`, null, {
+      headers: ngrokHeaders,
+    }),
+
   import: (file: File, format = 'csv') => {
-    const fd = new FormData(); fd.append('file', file); fd.append('format', format)
-    return api.post('/leads/import', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('format', format)
+
+    return api.post('/leads/import', fd, {
+      headers: {
+        ...ngrokHeaders,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
   },
-  export: (params?: Record<string, any>) => api.get('/leads/export', { params, responseType: 'blob' }),
+
+  export: (params?: Record<string, any>) =>
+    api.get('/leads/export', {
+      params,
+      responseType: 'blob',
+      headers: ngrokHeaders,
+    }),
 }
 
 // ── Analytics ─────────────────────────────────────────────────────────────────
